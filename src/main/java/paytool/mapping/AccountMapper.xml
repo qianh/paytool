@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="paytool.dao.AccountMapper">
+    <insert id="add" parameterType="Account">
+       insert into t_account(name,wallet,user_id) 
+        value(#{name},#{wallet},#{user.id})
+    </insert>
+    <update id="update1" parameterType="Account">
+       update t_account set
+       wallet=#{wallet}
+       where id=#{id}
+    </update>
+    <update id="update2" parameterType="Account">
+       update t_account set
+       wallet=#{wallet}
+       where id=#{id}
+    </update>
+    <delete id="delete" parameterType="Account">
+		delete from t_account where user_id=#{user.id}
+	</delete>
+	
+	<resultMap type="Account" id="accountMap" autoMapping="true">
+            <id column="a_id" property="id"/>
+            <association property="user" javaType="User">
+               <id column="user_id" property="id"/>
+               <result column="username" property="username"/>
+               <result column="nickname" property="nickname"/>
+               <result column="email" property="email"/>
+            </association>
+         </resultMap>
+	<select id="find" parameterType="int" resultMap="accountMap">
+	    select *,t1.id as'a_id' from t_account t1 right join t_user t2 on(t1.user_id=t2.id) where t1.id = #{id}
+	</select>
+	<select id="findByName" parameterType="String" resultMap="accountMap">
+	    select *,t1.id as'a_id' from t_account t1 right join t_user t2 on(t1.user_id=t2.id) where name = #{name}
+	</select>
+	<select id="findByUserId" parameterType="int" resultMap="accountMap">
+	    select *,t1.id as'a_id' from t_account t1 right join t_user t2 on(t1.user_id=t2.id) where t2.id= #{user.id}
+	</select>
+	<select id="list" parameterType="int" resultMap="accountMap">
+	     select *,t1.id as'a_id' from t_account t1 right join t_user t2 on(t1.user_id=t2.id) where t2.id = #{user.id}
+	</select>
+</mapper>

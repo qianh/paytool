@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="paytool.dao.MessageMapper">
+    <insert id="add" parameterType="Message">
+       insert into t_message(date,message,money,account_id) 
+        value(#{date},#{message},#{money},#{account.id})
+    </insert>
+    
+	<resultMap type="Message" id="messageMap" autoMapping="true">
+            <id column="m_id" property="id"/>
+            <association property="account" javaType="Account">
+               <id column="account_id" property="id"/>
+               <result column="name" property="name"/>
+               <result column="wallet" property="wallet"/>
+            </association>
+    </resultMap>
+	<select id="find" parameterType="int" resultMap="messageMap">
+	     select *,t1.id as'm_id' from t_message t1 right join t_account t2 on(t1.account_id=t2.id) where t2.id = #{account.id}
+	</select>
+	
+	<select id="findByPage" parameterType="map" resultMap="messageMap">
+	     select *,t1.id as'm_id' from t_message t1 right join t_account t2 on(t1.account_id=t2.id) where t2.id = #{id}
+	     limit #{pageOffset}, #{pageSize}  
+	</select>
+	
+	<select id="getCount" parameterType="map" resultType="Integer">
+	     select count(*),t1.id as'm_id' from t_message t1 right join t_account t2 on(t1.account_id=t2.id) where t2.id = #{id}
+	       
+	</select>
+</mapper>
